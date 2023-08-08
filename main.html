@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4">Film Database</h1>
+        <h1 class="mb-4">Movie Database</h1>
 
         <form onsubmit="addMovie(event)">
             <div class="form-group">
@@ -133,7 +133,41 @@
         }
 
         function editMovie(id) {
-            
+            const newTitle = prompt('Enter new title:');
+            const newDescription = prompt('Enter new description:');
+            const newDirector = prompt('Enter new director:');
+            const newRelease = prompt('Enter new release year (number):');
+
+            if (isNaN(newRelease)) {
+                alert('Release year must be a number.');
+                return; // exit de functie als het geen nummer is
+            }
+
+            const updatedMovie = {
+                title: newTitle,
+                description: newDescription,
+                director: newDirector,
+                movieRelease: parseInt(newRelease, 10)
+            };
+
+            if (newTitle === null || newDescription === null || newDirector === null || newRelease === null) {
+                console.log('Edit canceled');
+                return; // exit de functie als je canceled
+            }
+
+            fetch(`http://localhost:8888/api/groep1/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedMovie)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Movie updated:', data);
+                getMovies();
+            })
+            .catch(error => console.error('Error updating movie:', error));
         }
 
         function deleteMovie(id) {

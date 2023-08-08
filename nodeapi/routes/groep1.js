@@ -53,10 +53,15 @@ router.get('/search', async (req, res) => {
   // Update een bestaande record
   router.put('/:id', async (req, res) => {
     try {
-      const updatedRecord = await Groep1.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      res.json(updatedRecord);
+        const updatedRecord = await Groep1.findByIdAndUpdate(req.params.id, {
+            titleMovie: req.body.title,
+            description: req.body.description,
+            director: req.body.director,
+            movieRelease: req.body.movieRelease
+        }, { new: true });
+        res.json(updatedRecord);
     } catch (err) {
-      res.status(400).json({ message: err.message });
+        res.status(400).json({ message: err.message });
     }
   });
   
