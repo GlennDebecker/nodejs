@@ -74,10 +74,10 @@
             .catch(error => console.error('Error adding movie:', error));
         }
 
-        function getMovies() {
-            fetch('http://localhost:8888/api/groep1')
-                .then(response => response.json())
-                .then(data => {
+        function getMovies(limit, offset) {
+                 fetch(`http://localhost:8888/api/groep1?limit=${limit}&offset=${offset}`)
+                    .then(response => response.json())
+                    .then(data => {
                     const movieList = document.getElementById('movieList');
                     movieList.innerHTML = '';
 
