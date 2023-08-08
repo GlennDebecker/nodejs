@@ -8,14 +8,17 @@ module.exports = router;
 ``
 // Krijg all de records
 router.get('/', async (req, res) => {
-    try {
-      const records = await Groep1.find();
+  const limit = parseInt(req.query.limit) || 10; // Default limit to 10 if not provided
+  const offset = parseInt(req.query.offset) || 0;
+
+  try {
+      const records = await Groep1.find().limit(limit).skip(offset);
       res.json(records);
-    } catch (err) {
+  } catch (err) {
       res.status(500).json({ message: err.message });
-    }
-  });
-  
+  }
+});
+
   // Maak een nieuwe record
   router.post('/', async (req, res) => {
     const newRecord = new Groep1({
