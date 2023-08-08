@@ -1,3 +1,4 @@
+const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -14,6 +15,7 @@ mongoose.connect(mongoString, {
 
 // Middleware
 app.use(express.json());
+app.use(cors()); // Use the cors middleware
 
 
 app.get('/', (req, res) => {
@@ -29,3 +31,4 @@ const PORT = process.env.PORT || 8888;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+

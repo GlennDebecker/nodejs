@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Groep1 = require('../models/groep1');
 
-// CRUD operations voor groep1 hier
+// CRUD operations voor Movies hier
 
 module.exports = router;
 ``

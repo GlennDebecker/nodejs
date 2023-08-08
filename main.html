@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Film Database</title>
+</head>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Film Database</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Film Database</h1>
+
+        <form onsubmit="addMovie(event)">
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" class="form-control" name="title" id="title" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea class="form-control" name="description" id="description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="director">Director:</label>
+                <input type="text" class="form-control" name="director" id="director" required>
+            </div>
+            <div class="form-group">
+                <label for="movieRelease">Release Year:</label>
+                <input type="number" class="form-control" name="movieRelease" id="movieRelease" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Movie</button>
+        </form>
+
+        <button class="btn btn-info mt-3" onclick="getMovies()">Get Movies</button>
+
+        <ul id="movieList" class="list-group mt-3"></ul>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+            function addMovie(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const director = document.getElementById('director').value;
+            const movieReleaseInput = document.getElementById('movieRelease');
+            const movieRelease = parseInt(movieReleaseInput.value, 10); 
+
+            const movieData = {
+                title: title,
+                description: description,
+                director: director,
+                movieRelease: movieRelease
+            };
+
+            fetch('http://localhost:8888/api/groep1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(movieData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Movie added:', data);
+                getMovies(); // Reload list na toevoegen
+            })
+            .catch(error => console.error('Error adding movie:', error));
+        }
+
+        function getMovies() {
+            fetch('http://localhost:8888/api/groep1')
+                .then(response => response.json())
+                .then(data => {
+                    const movieList = document.getElementById('movieList');
+                    movieList.innerHTML = '';
+
+                    data.forEach(movie => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `
+                            <h2>${movie.titleMovie}</h2>
+                            <p>Description: ${movie.description}</p>
+                            <p>Director: ${movie.director}</p>
+                            <p>Release Date: ${movie.movieRelease}</p>
+                            <button onclick="editMovie('${movie._id}')">Edit</button>
+                            <button onclick="deleteMovie('${movie._id}')">Delete</button>
+                        `;
+                        movieList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function editMovie(id) {
+            
+        }
+
+        function deleteMovie(id) {
+        if (confirm('Are you sure you want to delete this movie?')) {
+            fetch(`http://localhost:8888/api/groep1/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Movie deleted:', data);
+                getMovies();
+            })
+            .catch(error => console.error('Error deleting movie:', error));
+        }
+    }
+    </script>
+</body>
+</html>
+

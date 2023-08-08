@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Groep1Schema = new mongoose.Schema({
+const MoviesSchema = new mongoose.Schema({
   titleMovie: {
     type: String,
     required: true
@@ -31,4 +31,4 @@ const Groep1Schema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Groep1', Groep1Schema);
+module.exports = mongoose.model('Groep1', MoviesSchema);
