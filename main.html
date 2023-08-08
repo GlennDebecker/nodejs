@@ -34,6 +34,9 @@
         </form>
 
         <button class="btn btn-info mt-3" onclick="getMovies()">Get Movies</button>
+        <button class="btn btn-info mt-3" onclick="searchMovies()">Search Movies</button>
+        <button class="btn btn-danger mt-3" onclick="removeMovieList()">Remove List</button>
+
 
         <ul id="movieList" class="list-group mt-3"></ul>
     </div>
@@ -72,6 +75,38 @@
                 getMovies(); // Reload list na toevoegen
             })
             .catch(error => console.error('Error adding movie:', error));
+        }
+
+        function searchMovies() {
+            const searchQuery = prompt('Enter search term:');
+            console.log('Search Query:', searchQuery);
+                if (searchQuery) {
+                    fetch(`http://localhost:8888/api/groep1/search?q=${searchQuery}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const movieList = document.getElementById('movieList');
+                            movieList.innerHTML = ''; // Maak de huidige lijst leeg
+
+                            data.forEach(movie => {
+                                const listItem = document.createElement('li');
+                                listItem.innerHTML = `
+                                    <h2>${movie.titleMovie}</h2>
+                                    <p>Description: ${movie.description}</p>
+                                    <p>Director: ${movie.director}</p>
+                                    <p>Release Date: ${movie.movieRelease}</p>
+                                    <button onclick="editMovie('${movie._id}')">Edit</button>
+                                    <button onclick="deleteMovie('${movie._id}')">Delete</button>
+                                `;
+                                movieList.appendChild(listItem);
+                            });
+                        })
+                        .catch(error => console.error('Error searching data:', error));
+                }
+        }   
+
+        function removeMovieList() {
+        const movieList = document.getElementById('movieList');
+        movieList.innerHTML = ''; // maak het movieList element leeg, zodat er niks meer te zien is
         }
 
         function getMovies(limit, offset) {

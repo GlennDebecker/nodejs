@@ -8,7 +8,7 @@ module.exports = router;
 ``
 // Krijg all de records
 router.get('/', async (req, res) => {
-  const limit = parseInt(req.query.limit) || 10; // Default limit to 10 if not provided
+  const limit = parseInt(req.query.limit) || 10;
   const offset = parseInt(req.query.offset) || 0;
 
   try {
@@ -18,6 +18,20 @@ router.get('/', async (req, res) => {
       res.status(500).json({ message: err.message });
   }
 });
+
+router.get('/search', async (req, res) => {
+  const searchQuery = req.query.q; // Krijg de search query parameter
+
+  try {
+      const records = await Groep1.find({
+          titleMovie: { $regex: new RegExp(searchQuery, 'i') } // case-insensitive opzoeken
+      });
+      res.json(records);
+  } catch (err) {
+      res.status(500).json({ message: err.message });
+  }
+});
+
 
   // Maak een nieuwe record
   router.post('/', async (req, res) => {
