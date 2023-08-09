@@ -7,7 +7,7 @@
 <html>
 <head>
     <title>Film Database</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
@@ -41,149 +41,27 @@
         <ul id="movieList" class="list-group mt-3"></ul>
     </div>
 
+    <div id="commentSection" class="mt-4">
+        <h2>Comment Section</h2>
+        <div class="input-group mb-3">
+          <input type="text" id="commenterName" class="form-control" placeholder="Your Name">
+          <input type="email" id="commenterEmail" class="form-control" placeholder="Your Email">
+          <input type="text" id="newComment" class="form-control" placeholder="Enter your comment">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" onclick="postComment()">Post Comment</button>
+          </div>
+        </div>
+        <ul id="commentsList" class="list-group">
+          <!-- Comments zullen hier dynamisch opgeslagen worden en getoond worden -->
+        </ul>
+      </div>
+
+    <script src="scripts.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <script>
-            function addMovie(event) {
-            event.preventDefault();
-
-            const title = document.getElementById('title').value;
-            const description = document.getElementById('description').value;
-            const director = document.getElementById('director').value;
-            const movieReleaseInput = document.getElementById('movieRelease');
-            const movieRelease = parseInt(movieReleaseInput.value, 10); 
-
-            const movieData = {
-                title: title,
-                description: description,
-                director: director,
-                movieRelease: movieRelease
-            };
-
-            fetch('http://localhost:8888/api/groep1', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(movieData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Movie added:', data);
-                getMovies(); // Reload list na toevoegen
-            })
-            .catch(error => console.error('Error adding movie:', error));
-        }
-
-        function searchMovies() {
-            const searchQuery = prompt('Enter search term:');
-            console.log('Search Query:', searchQuery);
-                if (searchQuery) {
-                    fetch(`http://localhost:8888/api/groep1/search?q=${searchQuery}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            const movieList = document.getElementById('movieList');
-                            movieList.innerHTML = ''; // Maak de huidige lijst leeg
-
-                            data.forEach(movie => {
-                                const listItem = document.createElement('li');
-                                listItem.innerHTML = `
-                                    <h2>${movie.titleMovie}</h2>
-                                    <p>Description: ${movie.description}</p>
-                                    <p>Director: ${movie.director}</p>
-                                    <p>Release Date: ${movie.movieRelease}</p>
-                                    <button onclick="editMovie('${movie._id}')">Edit</button>
-                                    <button onclick="deleteMovie('${movie._id}')">Delete</button>
-                                `;
-                                movieList.appendChild(listItem);
-                            });
-                        })
-                        .catch(error => console.error('Error searching data:', error));
-                }
-        }   
-
-        function removeMovieList() {
-        const movieList = document.getElementById('movieList');
-        movieList.innerHTML = ''; // maak het movieList element leeg, zodat er niks meer te zien is
-        }
-
-        function getMovies(limit, offset) {
-                 fetch(`http://localhost:8888/api/groep1?limit=${limit}&offset=${offset}`)
-                    .then(response => response.json())
-                    .then(data => {
-                    const movieList = document.getElementById('movieList');
-                    movieList.innerHTML = '';
-
-                    data.forEach(movie => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `
-                            <h2>${movie.titleMovie}</h2>
-                            <p>Description: ${movie.description}</p>
-                            <p>Director: ${movie.director}</p>
-                            <p>Release Date: ${movie.movieRelease}</p>
-                            <button onclick="editMovie('${movie._id}')">Edit</button>
-                            <button onclick="deleteMovie('${movie._id}')">Delete</button>
-                        `;
-                        movieList.appendChild(listItem);
-                    });
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-
-        function editMovie(id) {
-            const newTitle = prompt('Enter new title:');
-            const newDescription = prompt('Enter new description:');
-            const newDirector = prompt('Enter new director:');
-            const newRelease = prompt('Enter new release year (number):');
-
-            if (isNaN(newRelease)) {
-                alert('Release year must be a number.');
-                return; // exit de functie als het geen nummer is
-            }
-
-            const updatedMovie = {
-                title: newTitle,
-                description: newDescription,
-                director: newDirector,
-                movieRelease: parseInt(newRelease, 10)
-            };
-
-            if (newTitle === null || newDescription === null || newDirector === null || newRelease === null) {
-                console.log('Edit canceled');
-                return; // exit de functie als je canceled
-            }
-
-            fetch(`http://localhost:8888/api/groep1/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updatedMovie)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Movie updated:', data);
-                getMovies();
-            })
-            .catch(error => console.error('Error updating movie:', error));
-        }
-
-        function deleteMovie(id) {
-        if (confirm('Are you sure you want to delete this movie?')) {
-            fetch(`http://localhost:8888/api/groep1/${id}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Movie deleted:', data);
-                getMovies();
-            })
-            .catch(error => console.error('Error deleting movie:', error));
-        }
-    }
-    </script>
 </body>
 </html>
 

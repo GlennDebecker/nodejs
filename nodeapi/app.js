@@ -24,11 +24,10 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/groep1', require('./routes/groep1'));
-app.use('/api/applyMail', require('./routes/applyMail'));
+app.use('/api/commentBox', require('./routes/commentBox'));
 
 // Start de server
 const PORT = process.env.PORT || 8888;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
-
