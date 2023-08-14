@@ -48,10 +48,16 @@
 
     <div id="commentSection" class="mt-4">
         <h2>Comment Section</h2>
+        <span id="commentCharCount">Max characters left: 250</span>
         <div class="input-group mb-3">
           <input type="text" id="commenterName" class="form-control" placeholder="Your Name">
           <input type="email" id="commenterEmail" class="form-control" placeholder="Your Email">
-          <input type="text" id="newComment" class="form-control" placeholder="Enter your comment">
+          <textarea
+            id="newComment"
+            class="form-control"
+            placeholder="Enter your comment"
+            oninput="updateCharCount()"
+          ></textarea>
           <div class="input-group-append">
             <button class="btn btn-primary" type="button" onclick="postComment()">Post Comment</button>
           </div>

@@ -2,14 +2,28 @@
 function addMovie(event) {
   event.preventDefault();
 
-  const title = document.getElementById('title').value;
-  const description = document.getElementById('description').value;
-  const director = document.getElementById('director').value;
+  const titleInput = document.getElementById('title');
+  const descriptionInput = document.getElementById('description');
+  const directorInput = document.getElementById('director');
   const movieReleaseInput = document.getElementById('movieRelease');
+
+  const title = titleInput.value;
+  const description = descriptionInput.value;
+  const director = directorInput.value;
   const movieRelease = parseInt(movieReleaseInput.value, 10);
 
   // Krijg het huidige jaar
   const currentYear = new Date().getFullYear();
+
+  if (director.match(/\d/)) {
+    alert('Director name should not contain numbers.');
+    return;
+  }
+
+  if (title.length > 30) {
+    alert('Title should not exceed 30 characters.');
+    return;
+  }
 
   if (movieRelease < 1895 || movieRelease > currentYear) {
     alert('Release year must be between 1895 and the current year.');
@@ -201,18 +215,24 @@ function postComment() {
   const commenterNameInput = document.getElementById('commenterName');
   const commenterEmailInput = document.getElementById('commenterEmail');
   const newCommentInput = document.getElementById('newComment');
-  
+  const commentCharCount = document.getElementById('commentCharCount');
+
   const commenterName = commenterNameInput.value;
   const commenterEmail = commenterEmailInput.value;
   const newCommentText = newCommentInput.value;
 
+  if (commenterName.length > 30) {
+    alert('Username should not exceed 30 characters.');
+    return;
+  }
 
-  //console.log('commenterName:', commenterName);
-  //console.log('commenterEmail:', commenterEmail);
-  //console.log('newCommentText:', newCommentText);
+  if (!isValidEmail(commenterEmail)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
 
-  if (!commenterName || !commenterEmail || !newCommentText) {
-    alert('Please enter your name, email, and a comment');
+  if (newCommentText.length > 250) {
+    alert('Comment should not exceed 250 characters.');
     return;
   }
 
@@ -229,12 +249,28 @@ function postComment() {
     },
     body: JSON.stringify(newCommentData)
   })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Comment posted:', data);
-    fetchComments();
-  })
-  .catch(error => console.error('Error posting comment:', error));
+    .then(response => response.json())
+    .then(data => {
+      console.log('Comment posted:', data);
+      fetchComments();
+    })
+    .catch(error => console.error('Error posting comment:', error));
+}
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function updateCharCount() {
+  const maxChars = 250; // Maximum allowed characters
+  const newCommentInput = document.getElementById('newComment');
+  const charCountElement = document.getElementById('commentCharCount');
+
+  const currentChars = newCommentInput.value.length;
+  const remainingChars = maxChars - currentChars;
+
+  charCountElement.textContent = `Characters left: ${remainingChars}`;
 }
 
 
