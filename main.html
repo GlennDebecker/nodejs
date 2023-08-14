@@ -36,7 +36,12 @@
         <button class="btn btn-info mt-3" onclick="getMovies()">Get Movies</button>
         <button class="btn btn-info mt-3" onclick="searchMovies()">Search Movies</button>
         <button class="btn btn-danger mt-3" onclick="removeMovieList()">Remove List</button>
-
+        <div id="sortingButtons" class="mb-3">
+            <button class="btn btn-primary" onclick="sortMovies('alphabetical', 'ascending')">Sort Alphabetical A-Z</button>
+            <button class="btn btn-primary" onclick="sortMovies('alphabetical', 'descending')">Sort Alphabetical Z-A</button>
+            <button class="btn btn-primary" onclick="sortMovies('release')">Sort by Release Date</button>
+          </div>
+          
 
         <ul id="movieList" class="list-group mt-3"></ul>
     </div>

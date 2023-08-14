@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Groep1 = require('../models/groep1');
+const Movies = require('../models/Movies');
 
 // CRUD operations voor Movies hier
 
@@ -10,12 +10,23 @@ module.exports = router;
 router.get('/', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const offset = parseInt(req.query.offset) || 0;
+  const sortOption = req.query.sort;
+
+  let sortCriteria = {};
+
+  if (sortOption === 'alphabeticalAsc') {
+    sortCriteria = { titleMovie: 1 };
+  } else if (sortOption === 'alphabeticalDesc') {
+    sortCriteria = { titleMovie: -1 };
+  } else if (sortOption === 'release') {
+    sortCriteria = { movieRelease: 1 };
+  }
 
   try {
-      const records = await Groep1.find().limit(limit).skip(offset);
-      res.json(records);
+    const records = await Movies.find().limit(limit).skip(offset).sort(sortCriteria);
+    res.json(records);
   } catch (err) {
-      res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -23,7 +34,7 @@ router.get('/search', async (req, res) => {
   const searchQuery = req.query.q; // Krijg de search query parameter
 
   try {
-      const records = await Groep1.find({
+      const records = await Movies.find({
           titleMovie: { $regex: new RegExp(searchQuery, 'i') } // case-insensitive opzoeken
       });
       res.json(records);
@@ -33,9 +44,14 @@ router.get('/search', async (req, res) => {
 });
 
 
+
+
+
+
+
   // Maak een nieuwe record
   router.post('/', async (req, res) => {
-    const newRecord = new Groep1({
+    const newRecord = new Movies({
       titleMovie: req.body.title,
       description: req.body.description,
       director: req.body.director,
@@ -53,7 +69,7 @@ router.get('/search', async (req, res) => {
   // Update een bestaande record
   router.put('/:id', async (req, res) => {
     try {
-        const updatedRecord = await Groep1.findByIdAndUpdate(req.params.id, {
+        const updatedRecord = await Movies.findByIdAndUpdate(req.params.id, {
             titleMovie: req.body.title,
             description: req.body.description,
             director: req.body.director,
@@ -68,7 +84,7 @@ router.get('/search', async (req, res) => {
   // Delete de record
   router.delete('/:id', async (req, res) => {
     try {
-      await Groep1.findByIdAndDelete(req.params.id);
+      await Movies.findByIdAndDelete(req.params.id);
       res.json({ message: 'Record deleted' });
     } catch (err) {
       res.status(500).json({ message: err.message });
